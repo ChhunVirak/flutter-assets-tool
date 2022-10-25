@@ -1,11 +1,10 @@
 import 'dart:io';
-import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project_tools/module/home/controller/home_controller.dart';
 import 'package:get/get.dart';
-import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 import '../../../widget/card.dart';
 
@@ -24,278 +23,250 @@ class _HomePageState extends State<HomePage> {
   String dropdownvalue = '';
   List listDirectory = <String>[].obs;
 
-  final TextEditingController _textController = TextEditingController();
+  String projectPath = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       // backgroundColor: Colors.transparent,
-      body: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(
-                width: 100,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.white70)),
-                // color: Colors.white,
-                child: Column(
-                  children: const [
-                    FlutterLogo(size: 30),
-                    SizedBox(height: 50),
-                    NavigateButton(
-                      icon: CupertinoIcons.home,
-                    ),
-                    SizedBox(height: 50),
-                    NavigateButton(
-                      title: 'All File',
-                      icon: CupertinoIcons.folder_fill_badge_person_crop,
-                    ),
-                    SizedBox(height: 50),
-                    // NavigateButton(
-                    //   icon: CupertinoIcons.home,
-                    // ),
-                    // SizedBox(height: 50),
-                    // NavigateButton(
-                    //   title: 'Recents',
-                    //   icon: CupertinoIcons.rectangle_fill_on_rectangle_fill,
-                    // ),
-                    // SizedBox(height: 50),
-                    NavigateButton(
-                      title: 'Setting',
-                      icon: CupertinoIcons.settings,
-                    ),
-                    Spacer(),
-                    AvatarWidget(),
-                    SizedBox(height: 20)
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 12,
-            child: Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  // var path = await FilePicker.platform.getDirectoryPath();
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // var path = await FilePicker.platform.getDirectoryPath();
 
-                  Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Select Your Flutter Project'),
-                          const SizedBox(height: 5),
-                          SizedBox(
-                            height: 40,
-                            width: 150,
-                            child: DropdownButtonFormField<String>(
-                                onTap: () async {
-                                  // String? path =
-                                  //     await FilePicker.platform.getDirectoryPath();
-
-                                  List tempList = <String>[];
-
-                                  var pa = Directory(
-                                      '/Users/virak/App/flutter_project_tools/');
-                                  // var pa = sysPath.basename(path ?? '');//get file name
-                                  var li = pa.listSync().whereType<Directory>();
-                                  li.map((e) {
-                                    String fileName = p.basename(e.path);
-                                    tempList.add(fileName);
-                                    debugPrint('Path : $fileName');
-                                  }).toList();
-                                  dropdownvalue = tempList.first;
-
-                                  listDirectory = tempList;
-
-                                  setState(() {});
-
-                                  // initialDirectory: '/Users/virak/App');
-                                  // if (path != null && path.isNotEmpty) {
-                                  //   _textController.text = path;
-                                  //   setState(() {});
-                                  // }
-                                },
-                                elevation: 1,
-                                decoration: const InputDecoration(
-                                  focusColor: Colors.red,
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 0.0),
-                                  enabledBorder: OutlineInputBorder(
-                                    //<-- SEE HERE
-                                    borderSide: BorderSide(
-                                        color: Colors.black, width: 2),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    //<-- SEE HERE
-                                    borderSide: BorderSide(
-                                        color: Colors.black, width: 2),
-                                  ),
-                                  filled: true,
-                                ),
-                                value: dropdownvalue,
-                                items: listDirectory
-                                    .map<DropdownMenuItem<String>>(
-                                        (e) => DropdownMenuItem(
-                                              value: e,
-                                              child: Text(e),
-                                            ))
-                                    .toList(),
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    dropdownvalue = value!;
-                                  });
-                                }),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 20),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Select Your Asset Folder'),
-                          const SizedBox(height: 5),
-                          SizedBox(
-                            height: 40,
-                            width: 150,
-                            child: DropdownButtonFormField<String>(
-                                onTap: () {
-                                  debugPrint('Work');
-                                },
-                                elevation: 1,
-                                decoration: const InputDecoration(
-                                  focusColor: Colors.red,
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 0.0),
-                                  enabledBorder: OutlineInputBorder(
-                                    //<-- SEE HERE
-                                    borderSide: BorderSide(
-                                        color: Colors.black, width: 2),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    //<-- SEE HERE
-                                    borderSide: BorderSide(
-                                        color: Colors.black, width: 2),
-                                  ),
-                                  filled: true,
-                                ),
-                                value: dropdownvalue,
-                                items: listDirectory
-                                    .map<DropdownMenuItem<String>>(
-                                        (e) => DropdownMenuItem(
-                                              value: e,
-                                              child: Text(e),
-                                            ))
-                                    .toList(),
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    dropdownvalue = value!;
-                                  });
-                                }),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  //left Navigator
-                  Expanded(
-                    child: Row(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Select Your Flutter Project'),
+                    const SizedBox(height: 5),
+                    Row(
                       children: [
-                        Expanded(
-                          flex: 3,
-                          child: Obx(
-                            () => Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: ListView.separated(
-                                itemCount: _scanCon.listUnused.length,
-                                itemBuilder: (context, index) => CardWidget(
-                                  title:
-                                      "${index + 1}/. ${_scanCon.listUnused[index]}",
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text('Warning'),
-                                        content: const Text(
-                                            'Are you sure to delete this file?'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text('Cancel'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              try {
-                                                File('/Users/virak/Learning/Dart_Backend/asset_deleter/${_scanCon.listUnused[index]}')
-                                                    .delete()
-                                                    .then((value) {
-                                                  _scanCon.listUnused
-                                                      .removeAt(index);
-                                                  Navigator.pop(context);
-                                                  _scanCon.listUnused.refresh();
-                                                });
-                                              } catch (e) {
-                                                debugPrint('Error : $e');
-                                              }
-                                            },
-                                            child: const Text('Sure'),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                                separatorBuilder: (context, index) =>
-                                    const SizedBox(height: 20),
+                        IconButton(
+                          onPressed: () async {
+                            var a = await FilePicker.platform
+                                .getDirectoryPath(lockParentWindow: true);
+                            var b = await getTemporaryDirectory();
+                            debugPrint('Success $a : ${b.parent.parent.path}');
+                          },
+                          icon: const Icon(Icons.file_present_rounded),
+                        ),
+                        SizedBox(
+                          height: 35,
+                          width: 150,
+                          child: TextFormField(
+                            onTap: () async {},
+                            decoration: const InputDecoration(
+                              focusColor: Colors.red,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 0.0),
+                              enabledBorder: OutlineInputBorder(
+                                //<-- SEE HERE
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 1),
                               ),
+                              focusedBorder: OutlineInputBorder(
+                                //<-- SEE HERE
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 1),
+                              ),
+                              filled: true,
                             ),
+                            onChanged: (value) {
+                              setState(() {
+                                projectPath = value;
+                              });
+                            },
                           ),
-                        ),
-                        const VerticalDivider(
-                          thickness: 1,
-                          color: Colors.black,
-                        ),
-                        Expanded(
-                          child: Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
-                              child: Column(
-                                children: [
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        _scanCon.scan();
-                                      },
-                                      child: const Text('Start')),
-                                  const SizedBox(height: 10),
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        _scanCon.stop();
-                                      },
-                                      child: const Text('Stop'))
-                                ],
-                              )),
                         ),
                       ],
                     ),
-                  )
+                  ],
+                ),
+                const SizedBox(width: 20),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Select Your Asset Folder'),
+                    const SizedBox(height: 5),
+                    SizedBox(
+                      height: 35,
+                      width: 150,
+                      child: DropdownButtonFormField<String>(
+                          onTap: () {
+                            debugPrint('Work');
+                          },
+                          elevation: 1,
+                          decoration: const InputDecoration(
+                            focusColor: Colors.red,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 0.0),
+                            enabledBorder: OutlineInputBorder(
+                              //<-- SEE HERE
+                              borderSide:
+                                  BorderSide(color: Colors.black, width: 1),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              //<-- SEE HERE
+                              borderSide:
+                                  BorderSide(color: Colors.black, width: 1),
+                            ),
+                            filled: true,
+                          ),
+                          value: dropdownvalue,
+                          items: listDirectory
+                              .map<DropdownMenuItem<String>>(
+                                  (e) => DropdownMenuItem(
+                                        value: e,
+                                        child: Text(e),
+                                      ))
+                              .toList(),
+                          onChanged: (String? value) {
+                            setState(() {
+                              dropdownvalue = value!;
+                            });
+                          }),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        _scanCon.start();
+                      },
+                      child: const Text('Start')),
+                ),
+                const SizedBox(width: 10),
+                SizedBox(
+                  height: 30,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        _scanCon.stop();
+                        // dropdownvalue = '';
+                        // listDirectory.clear();
+                        // if (projectPath.isNotEmpty) {
+                        //   try {
+                        //     List tempList = <String>[];
+
+                        //     var pa = Directory(projectPath);
+                        //     // var pa = sysPath.basename(path ?? '');//get file name
+                        //     var li = pa.listSync().whereType<Directory>();
+                        //     li.map((e) {
+                        //       String fileName = p.basename(e.path);
+                        //       tempList.add(fileName);
+                        //       debugPrint('Path : $fileName');
+                        //     }).toList();
+                        //     if (!tempList.contains('lib')) {
+                        //       ScaffoldMessenger.of(context).showSnackBar(
+                        //         const SnackBar(
+                        //           behavior: SnackBarBehavior.floating,
+                        //           content: Text("This isn't a Flutter Project"),
+                        //         ),
+                        //       );
+                        //     } else {
+                        //       dropdownvalue = tempList.first;
+                        //       listDirectory = tempList;
+                        //     }
+                        //   } catch (e) {
+                        //     ScaffoldMessenger.of(context).showSnackBar(
+                        //       SnackBar(
+                        //         behavior: SnackBarBehavior.floating,
+                        //         content: Text(e.toString()),
+                        //       ),
+                        //     );
+                        //   }
+                        // } else {
+                        //   ScaffoldMessenger.of(context).showSnackBar(
+                        //     const SnackBar(
+                        //       behavior: SnackBarBehavior.floating,
+                        //       content: Text('Project not found'),
+                        //     ),
+                        //   );
+                        // }
+
+                        // setState(() {});
+                      },
+                      child: const Text('Stop')),
+                )
+              ],
+            ),
+
+            //left Navigator
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Obx(
+                      () => Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: ListView.separated(
+                          itemCount: _scanCon.listUnused.length,
+                          itemBuilder: (context, index) => CardWidget(
+                            title:
+                                "${index + 1}/. ${_scanCon.listUnused[index]}",
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Warning'),
+                                  content: const Text(
+                                      'Are you sure to delete this file?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        try {
+                                          File('/Users/virak/Learning/Dart_Backend/asset_deleter/${_scanCon.listUnused[index]}')
+                                              .delete()
+                                              .then((value) {
+                                            _scanCon.listUnused.removeAt(index);
+                                            Navigator.pop(context);
+                                            _scanCon.listUnused.refresh();
+                                          });
+                                        } catch (e) {
+                                          debugPrint('Error : $e');
+                                        }
+                                      },
+                                      child: const Text('Sure'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 20),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const VerticalDivider(
+                    thickness: 1,
+                    color: Colors.black,
+                  ),
+                  Expanded(
+                    child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Column(
+                          children: const [],
+                        )),
+                  ),
                 ],
               ),
-            ),
-          ),
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -352,9 +323,10 @@ class NavigateButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: ontap,
-      child: Column(
+    return IconButton(
+      iconSize: 50,
+      onPressed: ontap,
+      icon: Column(
         children: [
           Icon(
             icon,

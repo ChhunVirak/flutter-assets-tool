@@ -6,20 +6,24 @@ import 'package:get/get.dart';
 class HomeController extends GetxController {
   final listUnused = <String>[].obs;
 
-  Future? f;
+  bool forceStop = false;
 
   Future<void> start() async {
-    f = await scan();
+    await scan();
   }
 
   Future<void> stop() async {
-    f?.asStream().listen((event) {}).cancel();
+    forceStop = true;
+  }
+
+  Future test() async {
+    await Future.delayed(const Duration(seconds: 10));
   }
 
   Future scan() async {
+    forceStop = false;
     listUnused.clear();
-    Directory assdir =
-        Directory('/Users/virak/Learning/Dart_Backend/asset_deleter/assets');
+    Directory assdir = Directory('/Users/virak/App/cic-app/assets');
     var listasset = assdir.listSync(recursive: true).whereType<File>();
 
     List<String> assetpaths = [];
@@ -27,7 +31,7 @@ class HomeController extends GetxController {
     for (var a in listasset) {
       var p = a.path;
       // print(p);
-      if (p.endsWith('md') ||
+      if (p.endsWith('png') ||
           p.endsWith('svg') ||
           p.endsWith('jpg') ||
           p.endsWith('jpeg')) {
@@ -35,8 +39,10 @@ class HomeController extends GetxController {
       }
     }
 
-    var dir = Directory('/Users/virak/Learning/Dart_Backend/asset_deleter/lib');
+    var dir = Directory('/Users/virak/App/cic-app/lib');
     var listFile = dir.listSync(recursive: true).whereType<File>();
+
+    ///check path in all file
     Future<bool> iscontain(String sortpath) async {
       for (var a in listFile) {
         var p = a.path;
@@ -52,32 +58,20 @@ class HomeController extends GetxController {
       return false;
     }
 
-    ///list
-    // List<String> png = [];
-    // List<String> jpg = [];
-    // List<String> jpeg = [];
-    // List<String> svg = [];
-
+    ///scan every assets
     for (String asset in assetpaths) {
-      String sortpath = asset.substring(asset.indexOf('assets'));
-      bool yesContain = await iscontain(sortpath);
-      if (!yesContain) {
-        listUnused.add(sortpath);
-        listUnused.refresh();
-        // if (sortpath.endsWith('png')) {
-        //   png.add(sortpath);
-        // }
-        // if (sortpath.endsWith('jpg')) {
-        //   jpg.add(sortpath);
-        // }
-        // if (sortpath.endsWith('jpeg')) {
-        //   jpeg.add(sortpath);
-        // }
-        // if (sortpath.endsWith('svg')) {
-        //   svg.add(sortpath);
-        // }
+      if (!forceStop) {
+        debugPrint('start');
+        String sortpath = asset.substring(asset.indexOf('assets'));
+        bool yesContain = await iscontain(sortpath);
+        if (!yesContain) {
+          listUnused.add(sortpath);
+          listUnused.refresh();
 
-        debugPrint(sortpath);
+          debugPrint(sortpath);
+        }
+      } else {
+        break;
       }
     }
   }
